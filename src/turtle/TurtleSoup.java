@@ -100,7 +100,14 @@ public class TurtleSoup {
      */
     public static double calculateHeadingToPoint(double currentHeading, int currentX, int currentY,
                                                  int targetX, int targetY) {
-        throw new RuntimeException("implement me!");
+    	int diffX = targetX - currentX;
+        int diffY = targetY - currentY;
+        double angleFromNorth = Math.toDegrees(Math.atan2(diffX, diffY));
+        double angle = angleFromNorth - currentHeading;
+        // normalize angle to be positive 
+        if(angle < 0)
+            angle += 360;
+        return angle;
     }
 
     /**
@@ -118,7 +125,15 @@ public class TurtleSoup {
      *         otherwise of size (# of points) - 1
      */
     public static List<Double> calculateHeadings(List<Integer> xCoords, List<Integer> yCoords) {
-        throw new RuntimeException("implement me!");
+    	List<Double> headingChanges = new ArrayList<Double>();
+        int numberOfCoordinates = xCoords.size();
+        double currentHeading = 0;
+        for(int i = 1; i < numberOfCoordinates; i++){
+            double adjustment = calculateHeadingToPoint(currentHeading, xCoords.get(i-1), yCoords.get(i-1), xCoords.get(i), xCoords.get(i));
+            currentHeading += adjustment;
+            headingChanges.add(adjustment);
+        }
+        return headingChanges;
     }
 
     /**
@@ -130,7 +145,11 @@ public class TurtleSoup {
      * @param turtle the turtle context
      */
     public static void drawPersonalArt(Turtle turtle) {
-        throw new RuntimeException("implement me!");
+    	// onion slice
+        for(int i = 0; i < 12; i++){ // i < 15 to limit size of shapes
+            drawRegularPolygon(turtle, i, i*5);
+            drawRegularPolygon(turtle, i*5, i);
+        }
     }
 
     /**
@@ -143,7 +162,7 @@ public class TurtleSoup {
     public static void main(String args[]) {
         DrawableTurtle turtle = new DrawableTurtle();
 
-        TurtleSoup.drawRegularPolygon(turtle, 10, 40);
+        TurtleSoup.drawPersonalArt(turtle);
 
         // draw the window
         turtle.draw();
